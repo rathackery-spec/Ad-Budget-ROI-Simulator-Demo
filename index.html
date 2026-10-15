@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Budget & ROI Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js CDN for real-time visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="container header-content">
+            <div>
+                <h1>Ad Budget & ROI Simulator</h1>
+                <p class="subtitle">Interactive Marketing Performance & Forecasting Tool</p>
+            </div>
+            <div class="author-badge">Made by Remington A. Thackery</div>
+        </div>
+    </header>
+
+    <main class="container main-layout">
+        <!-- Control Panel -->
+        <section class="card control-panel">
+            <h2>Campaign Parameters</h2>
+            
+            <div class="preset-group save-section">
+                <span class="label-title">Scenario Management:</span>
+                <div class="save-row">
+                    <input type="text" id="scenarioName" placeholder="e.g. October Budget" class="scenario-input">
+                    <button id="saveScenarioBtn" class="btn save-btn">Save</button>
+                </div>
+                <div class="load-row" style="margin-top: 0.5rem;">
+                    <select id="loadScenarioSelect" class="scenario-select">
+                        <option value="">-- Load Saved Scenario --</option>
+                    </select>
+                </div>
+                <div class="baseline-row" style="margin-top: 0.75rem;">
+                    <button id="setBaselineBtn" class="btn baseline-btn">Pin Current as Baseline 📌</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-header">
+                    <label for="adSpendNum">Monthly Ad Spend ($)</label>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" id="adSpendNum" class="val-input" value="5000" min="0" step="10">
+                    </div>
+                </div>
+                <input type="range" id="adSpend" min="100" max="50000" step="10" value="5000">
+            </div>
+
+            <div class="input-group">
+                <div class="input-header">
+                    <label for="cpcNum">Cost Per Click / CPC ($)</label>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" id="cpcNum" class="val-input" value="2.50" min="0.01" step="0.01">
+                    </div>
+                </div>
+                <input type="range" id="cpc" min="0.01" max="25.00" step="0.01" value="2.50">
+            </div>
+
+            <div class="input-group">
+                <div class="input-header">
+                    <label for="convRateNum">Conversion Rate (%)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="convRateNum" class="val-input" value="2.50" min="0.01" max="100.00" step="0.01">
+                        <span class="currency-symbol">%</span>
+                    </div>
+                </div>
+                <input type="range" id="convRate" min="0.01" max="100.00" step="0.01" value="2.5">
+            </div>
+
+            <div class="input-group">
+                <div class="input-header">
+                    <label for="aovNum">Average Order Value / AOV ($)</label>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" id="aovNum" class="val-input" value="75.00" min="1.00" step="1.00">
+                    </div>
+                </div>
+                <input type="range" id="aov" min="1" max="500" step="1" value="75">
+            </div>
+
+            <div class="input-group">
+                <div class="input-header">
+                    <label for="marginNum">Product Gross Margin (%)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="marginNum" class="val-input" value="60.00" min="1.00" max="100.00" step="1.00">
+                        <span class="currency-symbol">%</span>
+                    </div>
+                </div>
+                <input type="range" id="margin" min="1" max="100" step="1" value="60">
+            </div>
+        </section>
+
+        <!-- Results & Dashboard Panel -->
+        <section class="dashboard-panel">
+            <!-- Key Metric Summary Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-label">Estimated Clicks</span>
+                    <span id="resClicks" class="metric-value">2,000</span>
+                    <span id="diffClicks" class="metric-diff"></span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Conversion Volume</span>
+                    <span id="resConversions" class="metric-value">50</span>
+                    <span id="diffConversions" class="metric-diff"></span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Cost Per Acquisition (CPA)</span>
+                    <span id="resCpa" class="metric-value">$100.00</span>
+                    <span id="diffCpa" class="metric-diff"></span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Projected Revenue</span>
+                    <span id="resRevenue" class="metric-value">$3,750.00</span>
+                    <span id="diffRevenue" class="metric-diff"></span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Return on Ad Spend (ROAS)</span>
+                    <span id="resRoas" class="metric-value">0.75×</span>
+                    <span id="diffRoas" class="metric-diff"></span>
+                </div>
+                <div class="metric-card highlight-card">
+                    <span class="metric-label">Contribution Profit (After Ad Spend & COGS)</span>
+                    <span id="resNetProfit" class="metric-value">-$2,750.00</span>
+                    <span id="diffNetProfit" class="metric-diff"></span>
+                </div>
+            </div>
+
+            <!-- Automated Insights Panel -->
+            <div class="card insights-card">
+                <h3>💡 Automated Campaign Health Check</h3>
+                <ul id="insightsList" class="insights-list">
+                    <li>Analyzing campaign parameters...</li>
+                </ul>
+            </div>
+
+            <!-- Visual Chart Container -->
+            <div class="card chart-card">
+                <div class="chart-header-row">
+                    <h3>Financial Breakdown & Comparison</h3>
+                    <span id="baselineStatus" class="baseline-status-badge">No Baseline Pinned</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="roiChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <div class="container">
+            <p>Made by Remington A. Thackery • Marketing Decision Support System</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
